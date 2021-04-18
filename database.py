@@ -30,7 +30,11 @@ class TokensDB:
             print("new user:")
             print("username: ",username)
             print("password: ",password)
-        self.connection.close()
+            self.connection.close()
+            return 1
+        else:
+            self.connection.close()
+            return -1
 
     def generate_token(self,username,password):
         self.connection = sqlite3.connect(filename)
@@ -46,7 +50,6 @@ class TokensDB:
             self.connection.close()
             print("generate token: ")
             print("username: ",username)
-            print("password: ",password)
             return t
 
     def get_token(self,username,password):

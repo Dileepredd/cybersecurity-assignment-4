@@ -11,18 +11,34 @@ def new_user():
         return Response('{"error":"username feild is missing"}',content_type="application/json",status=400)
     if 'password' not in d.keys():
         return Response('{"error":"password feild is missing"}',content_type="application/json",status=400)
-    print(d)
-    print(d.keys())
     if tdb.register(d['username'],d['password']) == -1:
         return Response('{"error":"username already exist"}',content_type="application/json",status=400)
-    return jsonify(d)
+    return Response('{"status":"account is succesfully created"}',content_type="application/json",status=200)
 
-@app.route('/token',methods = ["GET"])
+@app.route('/token',methods = ["POST"])
 def get_token():
-    return "hello"
+    d = request.get_json(force=True)
+    if 'username' not in d.keys():
+        return Response('{"error":"username feild is missing"}',content_type="application/json",status=400)
+    if 'password' not in d.keys():
+        return Response('{"error":"password feild is missing"}',content_type="application/json",status=400)
+    result = tdb.get_token(d['username'],d['password'])
+    if result == -1:
+        return Response('{"error":"username does not exist"}',content_type="application/json",status=400)
+    else:
+        return jsonify({"token":result})
 
-@app.route('/newtoken',methods = ["GET"])
+@app.route('/newtoken',methods = ["POST"])
 def generate_token():
-    return "hello"
+    d = request.get_json(force=True)
+    if 'username' not in d.keys():
+        return Response('{"error":"username feild is missing"}',content_type="application/json",status=400)
+    if 'password' not in d.keys():
+        return Response('{"error":"password feild is missing"}',content_type="application/json",status=400)
+    result = tdb.generate_token(d['username'],d['password'])
+    if result == -1:
+        return Response('{"error":"username does not exist"}',content_type="application/json",status=400)
+    else:
+        return jsonify({"token":result})
 
 app.run()
